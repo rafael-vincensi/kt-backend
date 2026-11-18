@@ -11,12 +11,23 @@ import java.time.LocalDateTime
 class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFound(ex: NotFoundException): ResponseEntity<ErrorDetails> {
+    fun handleNotFoundException(ex: NotFoundException): ResponseEntity<ErrorDetails> {
         val errorDetails = ErrorDetails(
             status = HttpStatus.NOT_FOUND.value(),
             message = ex.message,
             timestamp = LocalDateTime.now(),
         )
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
+    }
+
+    @ExceptionHandler(ConflictException::class)
+    fun handleConflictException(ex: ConflictException): ResponseEntity<ErrorDetails> {
+        val errorDetails = ErrorDetails(
+            status = HttpStatus.CONFLICT.value(),
+            message = ex.message,
+            timestamp = LocalDateTime.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails)
     }
 }
