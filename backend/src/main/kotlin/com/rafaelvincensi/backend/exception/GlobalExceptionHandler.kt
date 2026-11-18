@@ -1,0 +1,22 @@
+package com.rafaelvincensi.backend.exception
+
+import com.rafaelvincensi.backend.exception.dto.ErrorDetails
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
+import java.time.LocalDateTime
+
+@ControllerAdvice
+class GlobalExceptionHandler {
+
+    @ExceptionHandler(NotFoundException::class)
+    fun handleNotFound(ex: NotFoundException): ResponseEntity<ErrorDetails> {
+        val errorDetails = ErrorDetails(
+            status = HttpStatus.NOT_FOUND.value(),
+            message = ex.message,
+            timestamp = LocalDateTime.now(),
+        )
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
+    }
+}
