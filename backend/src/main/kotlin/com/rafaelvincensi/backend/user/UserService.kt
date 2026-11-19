@@ -1,6 +1,7 @@
 package com.rafaelvincensi.backend.user
 
 import com.rafaelvincensi.backend.exception.ConflictException
+import com.rafaelvincensi.backend.exception.NotFoundException
 import com.rafaelvincensi.backend.user.dto.CreateUserRequestDTO
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -22,11 +23,19 @@ class UserService(
         if (userRepository.existsUserByEmail(normalizedEmail)){
             throw ConflictException("Email already exists!")
         }
-
         val password = passwordEncoder.encode(request.password)
 
         val user = User(username = normalizedUsername, email = normalizedEmail, password = password!!)
 
         return userRepository.save(user)
     }
+
+    fun findByEmail(email: String): User {
+        val user = userRepository.findByEmail(email)
+            ?: throw NotFoundException("User with this email not found!")
+
+        return user
+    }
+
+
 }
