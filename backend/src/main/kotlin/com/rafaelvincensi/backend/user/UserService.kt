@@ -3,7 +3,7 @@ package com.rafaelvincensi.backend.user
 import com.rafaelvincensi.backend.exception.ConflictException
 import com.rafaelvincensi.backend.exception.NotFoundException
 import com.rafaelvincensi.backend.user.dto.CreateUserRequestDTO
-import org.aspectj.weaver.ast.Not
+import com.rafaelvincensi.backend.user.dto.UpdateUserProfileRequestDTO
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -18,11 +18,11 @@ class UserService(
         val normalizedUsername = request.username.trim().lowercase()
         val normalizedEmail = request.email.trim().lowercase()
 
-        if (userRepository.existsUserByUsername(normalizedUsername)){
+        if (userRepository.existsUserByUsername(normalizedUsername)) {
             throw ConflictException("Username already exists!")
         }
 
-        if (userRepository.existsUserByEmail(normalizedEmail)){
+        if (userRepository.existsUserByEmail(normalizedEmail)) {
             throw ConflictException("Email already exists!")
         }
         val password = passwordEncoder.encode(request.password)
@@ -54,6 +54,29 @@ class UserService(
             ?: throw NotFoundException("User with this username not found!")
 
         return user
+    }
+
+    fun updateUserProfile(id: UUID, request: UpdateUserProfileRequestDTO): User {
+        val user = findById(id)
+
+        if (!request.username.isNullOrBlank()) {
+            val normalizedUsername = request.username.trim().lowercase()
+            val existingUser = userRepository.findByUsername(normalizedUsername)
+
+            if (existingUser != null && existingUser.id != user.id) {
+                throw ConflictException("Username already exists!")
+            }
+            user.username = normalizedUsername
+        }
+
+        if (request.name != null) {
+            user.name = request.name
+        }
+        if (request.bio != null) {
+            user.bio = request.bio
+        }
+
+        return userRepository.save(user)
     }
 
 }
