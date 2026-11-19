@@ -6,6 +6,7 @@ import com.rafaelvincensi.backend.user.dto.CreateUserRequestDTO
 import com.rafaelvincensi.backend.user.dto.UpdateUserProfileRequestDTO
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -75,6 +76,8 @@ class UserService(
         if (request.bio != null) {
             user.bio = request.bio
         }
+
+        user.updatedAt= LocalDateTime.now()
 
         return userRepository.save(user)
     }
