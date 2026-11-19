@@ -36,5 +36,13 @@ class UserController(
 
         return ResponseEntity.ok(response)
     }
+    @GetMapping("/{username}")
+    fun findByUsername(@PathVariable username: String): ResponseEntity<UserResponseDTO> {
+        val user = userService.findByUsername(username)
+        val response = user.fromEntity()
+
+        return ResponseEntity.ok(response)
+    }
+
 
 }
