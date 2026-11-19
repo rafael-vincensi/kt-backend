@@ -47,4 +47,13 @@ class UserService(
         return user
     }
 
+    fun findByUsername(username: String): User {
+        val normalizedUsername = username.trim().lowercase()
+
+        val user = userRepository.findByUsername(normalizedUsername)
+            ?: throw NotFoundException("User with this username not found!")
+
+        return user
+    }
+
 }
