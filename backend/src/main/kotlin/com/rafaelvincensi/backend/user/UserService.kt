@@ -3,8 +3,10 @@ package com.rafaelvincensi.backend.user
 import com.rafaelvincensi.backend.exception.ConflictException
 import com.rafaelvincensi.backend.exception.NotFoundException
 import com.rafaelvincensi.backend.user.dto.CreateUserRequestDTO
+import org.aspectj.weaver.ast.Not
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class UserService(
@@ -37,5 +39,12 @@ class UserService(
         return user
     }
 
+    fun findById(id: UUID): User {
+        val user = userRepository.findById(id).orElseThrow {
+            NotFoundException("User not found")
+        }
+
+        return user
+    }
 
 }
