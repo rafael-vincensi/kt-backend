@@ -41,4 +41,15 @@ class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails)
     }
+
+    @ExceptionHandler(ConnectionRequestAlreadySentException::class)
+    fun handleConnectionRequestAlreadySentException(ex: ConnectionRequestAlreadySentException): ResponseEntity<ErrorDetails> {
+        var errorDetails = ErrorDetails(
+            status = HttpStatus.BAD_REQUEST.value(),
+            message = ex.message,
+            timestamp = LocalDateTime.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
+    }
 }
