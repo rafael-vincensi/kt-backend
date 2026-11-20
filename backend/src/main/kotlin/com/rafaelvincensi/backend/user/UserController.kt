@@ -4,7 +4,6 @@ import com.rafaelvincensi.backend.user.dto.CreateUserRequestDTO
 import com.rafaelvincensi.backend.user.dto.UserResponseDTO
 import com.rafaelvincensi.backend.user.dto.fromEntity
 import jakarta.validation.Valid
-import jakarta.websocket.server.PathParam
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -36,6 +35,7 @@ class UserController(
 
         return ResponseEntity.ok(response)
     }
+
     @GetMapping("/{username}")
     fun findByUsername(@PathVariable username: String): ResponseEntity<UserResponseDTO> {
         val user = userService.findByUsername(username)
