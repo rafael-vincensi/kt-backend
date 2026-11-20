@@ -74,4 +74,15 @@ class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDetails)
     }
+
+    @ExceptionHandler(InvalidConnectionStatusException::class)
+    fun handleInvalidConnectionStatusException(ex: InvalidConnectionStatusException): ResponseEntity<ErrorDetails> {
+        val errorDetails = ErrorDetails(
+            status = HttpStatus.CONFLICT.value(),
+            message = ex.message,
+            timestamp = LocalDateTime.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails)
+    }
 }
