@@ -1,7 +1,10 @@
 package com.rafaelvincensi.backend.connection
 
+import com.rafaelvincensi.backend.exception.AccessDeniedException
 import com.rafaelvincensi.backend.exception.AlreadyConnectedException
 import com.rafaelvincensi.backend.exception.ConnectionRequestAlreadySentException
+import com.rafaelvincensi.backend.exception.InvalidConnectionStatusException
+import com.rafaelvincensi.backend.exception.NotFoundException
 import com.rafaelvincensi.backend.exception.SelfConnectionNotAllowedException
 import com.rafaelvincensi.backend.user.UserService
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +20,6 @@ class ConnectionService(
 
     @Transactional
     fun sendConnectionRequest(requesterId: UUID, addresseeId: UUID): Connection {
-
         if (requesterId == addresseeId) {
             throw SelfConnectionNotAllowedException("You cannot connect to yourself!")
         }
@@ -54,6 +56,28 @@ class ConnectionService(
             statusRequest = StatusRequest.PENDING,
             createdAt = LocalDateTime.now()
         )
+
+        return connectionRepository.save(connection)
+    }
+
+    @Transactional
+    fun acceptConnectionRequest(userId: UUID, connectionId: UUID): Connection {
+        val user = userService.findById(userId)
+
+        val connection = connectionRepository.findById(connectionId).orElseThrow {
+            NotFoundException("Connection not found!")
+        }
+
+        if (user.id != connection.addressee.id){
+            throw AccessDeniedException("You cannot accept this connection!")
+        }
+
+        if (connection.statusRequest != StatusRequest.PENDING){
+            throw InvalidConnectionStatusException("The connection is not pending and cannot be accepted!")
+        }
+
+        connection.statusRequest = StatusRequest.ACCEPTED
+        connection.respondedAt = LocalDateTime.now()
 
         return connectionRepository.save(connection)
     }
