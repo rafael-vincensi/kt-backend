@@ -63,4 +63,15 @@ class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorDetails)
     }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<ErrorDetails> {
+        val errorDetails = ErrorDetails(
+            status = HttpStatus.FORBIDDEN.value(),
+            message = ex.message,
+            timestamp = LocalDateTime.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDetails)
+    }
 }
