@@ -82,4 +82,26 @@ class ConnectionService(
         return connectionRepository.save(connection)
     }
 
+    @Transactional
+    fun declineConnectionRequest(userId: UUID, connectionId: UUID): Connection {
+        val user = userService.findById(userId)
+
+        val connection = connectionRepository.findById(connectionId).orElseThrow {
+                NotFoundException("Connection not found!")
+            }
+
+        if (user.id != connection.addressee.id){
+            throw AccessDeniedException("You cannot decline this connection!")
+        }
+
+        if (connection.statusRequest != StatusRequest.PENDING){
+            throw InvalidConnectionStatusException("The connection is not pending and cannot be declined!")
+        }
+
+        connection.statusRequest = StatusRequest.DECLINED
+        connection.respondedAt = LocalDateTime.now()
+
+        return connectionRepository.save(connection)
+    }
+
 }
