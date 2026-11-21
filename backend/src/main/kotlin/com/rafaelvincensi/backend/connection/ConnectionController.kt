@@ -35,4 +35,12 @@ class ConnectionController(
         return ResponseEntity.ok(response)
     }
 
+    @PatchMapping("/{connectionId}/decline")
+    fun declineConnectionRequest(@RequestParam userId: UUID, @PathVariable connectionId: UUID): ResponseEntity<ConnectionResponseDTO> {
+        val declineConnection = connectionService.declineConnectionRequest(userId, connectionId)
+        val response = declineConnection.fromEntity()
+
+        return ResponseEntity.ok(response)
+    }
+
 }
