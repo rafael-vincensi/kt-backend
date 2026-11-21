@@ -115,10 +115,12 @@ class ConnectionService(
             .map{ it.fromEntity() }
     }
 
-    fun listPendingRequestConnections(userId: UUID): List<Connection> {
+    @Transactional(readOnly = true)
+    fun listPendingRequestConnections(userId: UUID): List<ConnectionResponseDTO> {
         userService.findById(userId)
 
         return connectionRepository.findAllByRequesterIdAndStatusRequest(userId, StatusRequest.PENDING)
+            .map { it.fromEntity() }
     }
 
 }
