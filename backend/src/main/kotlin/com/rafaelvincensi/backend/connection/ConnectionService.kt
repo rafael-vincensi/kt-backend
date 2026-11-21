@@ -110,4 +110,10 @@ class ConnectionService(
         return connectionRepository.findAllByAddresseeIdAndStatusRequest(userId, StatusRequest.PENDING)
     }
 
+    fun listPendingRequestConnections(userId: UUID): List<Connection> {
+        userService.findById(userId)
+
+        return connectionRepository.findAllByRequesterIdAndStatusRequest(userId, StatusRequest.PENDING)
+    }
+
 }
