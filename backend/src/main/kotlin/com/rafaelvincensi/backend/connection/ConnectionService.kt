@@ -1,5 +1,8 @@
 package com.rafaelvincensi.backend.connection
 
+
+import com.rafaelvincensi.backend.connection.dto.ConnectionResponseDTO
+import com.rafaelvincensi.backend.connection.dto.fromEntity
 import com.rafaelvincensi.backend.exception.AccessDeniedException
 import com.rafaelvincensi.backend.exception.AlreadyConnectedException
 import com.rafaelvincensi.backend.exception.ConnectionRequestAlreadySentException
@@ -104,10 +107,12 @@ class ConnectionService(
         return connectionRepository.save(connection)
     }
 
-    fun listPendingConnections(userId: UUID): List<Connection> {
+    @Transactional(readOnly = true)
+    fun listPendingConnections(userId: UUID): List<ConnectionResponseDTO> {
         userService.findById(userId)
 
         return connectionRepository.findAllByAddresseeIdAndStatusRequest(userId, StatusRequest.PENDING)
+            .map{ it.fromEntity() }
     }
 
     fun listPendingRequestConnections(userId: UUID): List<Connection> {
