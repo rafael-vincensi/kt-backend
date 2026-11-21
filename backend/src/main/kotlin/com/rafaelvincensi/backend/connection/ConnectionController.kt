@@ -51,4 +51,11 @@ class ConnectionController(
         return ResponseEntity.ok(listPendingConnections)
     }
 
+    @GetMapping("/{userId}/send")
+    fun listPendingRequestConnections(@PathVariable userId: UUID): ResponseEntity<List<ConnectionResponseDTO>> {
+        val listPendingRequestConnection = connectionService.listPendingRequestConnections(userId)
+
+        return ResponseEntity.ok(listPendingRequestConnection)
+    }
+
 }
