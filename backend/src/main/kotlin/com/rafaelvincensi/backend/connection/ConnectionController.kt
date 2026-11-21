@@ -4,6 +4,7 @@ import com.rafaelvincensi.backend.connection.dto.ConnectionResponseDTO
 import com.rafaelvincensi.backend.connection.dto.fromEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,6 +42,13 @@ class ConnectionController(
         val response = declineConnection.fromEntity()
 
         return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/{userId}/received")
+    fun listPendingConnections(@PathVariable userId: UUID): ResponseEntity<List<ConnectionResponseDTO>> {
+        val listPendingConnections = connectionService.listPendingConnections(userId)
+
+        return ResponseEntity.ok(listPendingConnections)
     }
 
 }
