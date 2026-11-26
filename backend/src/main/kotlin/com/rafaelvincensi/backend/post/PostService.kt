@@ -7,6 +7,7 @@ import com.rafaelvincensi.backend.post.dto.CreatePostRequestDTO
 import com.rafaelvincensi.backend.post.dto.UpdatePostRequestDTO
 import com.rafaelvincensi.backend.user.UserService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -16,6 +17,7 @@ class PostService(
     private val userService: UserService
 ) {
 
+    @Transactional
     fun createPost(request: CreatePostRequestDTO, userId: UUID): Post {
         val userPost = userService.findById(userId)
         val countPosts = postRepository.countByUserId(userId)
@@ -31,6 +33,10 @@ class PostService(
         return postRepository.save(post)
     }
 
+    fun listPosts(userId: UUID): List<Post> =
+        postRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
+
+    @Transactional
     fun updatePost(postId: UUID, userId: UUID, request: UpdatePostRequestDTO): Post {
         val user = userService.findById(userId)
         val post = postRepository.findById(postId).orElseThrow{
