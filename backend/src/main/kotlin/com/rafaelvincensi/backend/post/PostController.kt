@@ -7,6 +7,7 @@ import com.rafaelvincensi.backend.post.dto.fromEntity
 import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -43,6 +44,13 @@ class PostController(
         val response = updatedPost.fromEntity()
 
         return ResponseEntity.ok(response)
+    }
+
+    @DeleteMapping("/{postId}")
+    fun deletePost(@PathVariable postId: UUID, userId: UUID): ResponseEntity<Void> {
+        postService.deletePost(userId, postId)
+
+        return ResponseEntity.noContent().build()
     }
 
 }
