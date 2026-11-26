@@ -21,14 +21,14 @@ class Post(
     val id: UUID? = null,
 
     @Column(name = "image_url", nullable = false)
-    var imageUrl: String,
+    var imageUrl: String? = null,
     var description: String? = null,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime,
 
     @Column(name = "updated_at")
-    val updatedAt: LocalDateTime? = null,
+    var updatedAt: LocalDateTime? = null,
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
