@@ -2,10 +2,10 @@ package com.rafaelvincensi.backend.post
 
 import com.rafaelvincensi.backend.exception.AccessDeniedException
 import com.rafaelvincensi.backend.exception.NotFoundException
+import com.rafaelvincensi.backend.exception.PostLimitExceededException
 import com.rafaelvincensi.backend.post.dto.CreatePostRequestDTO
 import com.rafaelvincensi.backend.post.dto.UpdatePostRequestDTO
 import com.rafaelvincensi.backend.user.UserService
-import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -18,7 +18,11 @@ class PostService(
 
     fun createPost(request: CreatePostRequestDTO, userId: UUID): Post {
         val userPost = userService.findById(userId)
+        val countPosts = postRepository.countByUserId(userId)
 
+        if (countPosts >= 9) {
+            PostLimitExceededException("You can have a maximum of 9 posts!")
+        }
         val post = Post(
             description = request.description,
             createdAt = LocalDateTime.now(),
