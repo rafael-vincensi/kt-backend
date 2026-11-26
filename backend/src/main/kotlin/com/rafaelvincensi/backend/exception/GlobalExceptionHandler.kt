@@ -85,4 +85,15 @@ class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails)
     }
+
+    @ExceptionHandler(PostLimitExceededException::class)
+    fun handlePostLimitExceeded(ex: PostLimitExceededException): ResponseEntity<ErrorDetails> {
+        val errorDetails = ErrorDetails(
+            status = HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            message = ex.message,
+            timestamp = LocalDateTime.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorDetails)
+    }
 }
