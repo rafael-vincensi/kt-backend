@@ -23,7 +23,7 @@ class PostService(
         val countPosts = postRepository.countByUserId(userId)
 
         if (countPosts >= 9) {
-            PostLimitExceededException("You can have a maximum of 9 posts!")
+            throw PostLimitExceededException("You can have a maximum of 9 posts!")
         }
         val post = Post(
             description = request.description,
@@ -38,13 +38,12 @@ class PostService(
 
     @Transactional
     fun updatePost(postId: UUID, userId: UUID, request: UpdatePostRequestDTO): Post {
-        val user = userService.findById(userId)
         val post = postRepository.findById(postId).orElseThrow{
             NotFoundException("Post not found!")
         }
 
-        if (user.id != post.user.id){
-            AccessDeniedException("Only the post creator can edit!")
+        if (userId != post.user.id){
+            throw AccessDeniedException("Only the post creator can edit!")
         }
 
         if (request.description != null) {
@@ -54,5 +53,17 @@ class PostService(
         post.updatedAt = LocalDateTime.now()
 
         return postRepository.save(post)
+    }
+
+    @Transactional
+    fun deletePost(userId: UUID, postId: UUID) {
+        val post = postRepository.findById(postId).orElseThrow{
+            NotFoundException("Post not found!")
+    }
+        if (userId  != post.user.id) {
+            throw AccessDeniedException("Only the post creator can delete!")
+        }
+
+        postRepository.delete(post)
     }
 }
