@@ -4,7 +4,9 @@ import com.rafaelvincensi.backend.exception.AccessDeniedException
 import com.rafaelvincensi.backend.exception.NotFoundException
 import com.rafaelvincensi.backend.exception.PostLimitExceededException
 import com.rafaelvincensi.backend.post.dto.CreatePostRequestDTO
+import com.rafaelvincensi.backend.post.dto.PostReponseDTO
 import com.rafaelvincensi.backend.post.dto.UpdatePostRequestDTO
+import com.rafaelvincensi.backend.post.dto.fromEntity
 import com.rafaelvincensi.backend.user.UserService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -33,8 +35,8 @@ class PostService(
         return postRepository.save(post)
     }
 
-    fun listPosts(userId: UUID): List<Post> =
-        postRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
+    fun listPosts(userId: UUID): List<PostReponseDTO> =
+        postRepository.findAllByUserIdOrderByCreatedAtDesc(userId).map { it.fromEntity() }
 
     @Transactional
     fun updatePost(postId: UUID, userId: UUID, request: UpdatePostRequestDTO): Post {
