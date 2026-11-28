@@ -1,12 +1,14 @@
 package com.rafaelvincensi.backend.user
 
 import com.rafaelvincensi.backend.user.dto.CreateUserRequestDTO
+import com.rafaelvincensi.backend.user.dto.UpdateUserProfileRequestDTO
 import com.rafaelvincensi.backend.user.dto.UserResponseDTO
 import com.rafaelvincensi.backend.user.dto.fromEntity
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -43,4 +45,14 @@ class UserController(
 
         return ResponseEntity.ok(response)
     }
+
+    @PatchMapping()
+    fun updateUser(@RequestBody request: UpdateUserProfileRequestDTO, userId: UUID): ResponseEntity<UserResponseDTO> {
+        val user = userService.findById(userId)
+        val updatedUser = userService.updateUserProfile(userId, request)
+        val response = updatedUser.fromEntity()
+
+        return ResponseEntity.ok(response)
+    }
+
 }
